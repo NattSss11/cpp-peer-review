@@ -1,4 +1,3 @@
-
 struct CountryInfo {
     string country_name;
     string country_iso_code;
