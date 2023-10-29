@@ -19,11 +19,16 @@ struct QueryInfo {
 
 DBHandler ConnectToDatabase(const DBInfo& db_info) {
     DBConnector connector(db_info.db_allow_exceptions, db_info.db_log_level);
+     DBHandler db;
     if (db_info.db_name.starts_with("tmp."s)) {
-        return connector.ConnectTmp(db_info.db_name, db_info.db_connection_timeout);
+        db = connector.ConnectTmp(db_info.db_name, db_info.db_connection_timeout);
     } else {
-        return connector.Connect(db_info.db_name, db_info.db_connection_timeout);
+        db = connector.Connect(db_info.db_name, db_info.db_connection_timeout);
     }
+    if (!db_info.db_allow_exceptions && !db.IsOK()) {
+        return nullopt;
+    }
+    return db;
 }
 
 std::vector<Person> ExecutePersonQuery(const DBHandler& db, const QueryInfo& query_info) {
@@ -43,8 +48,8 @@ std::vector<Person> ExecutePersonQuery(const DBHandler& db, const QueryInfo& que
 
 std::vector<Person> LoadPersons(const DBInfo& db_info, const QueryInfo& query_info) {
     DBHandler db = ConnectToDatabase(db_info);
-
-    if (!db_info.db_allow_exceptions && !db.IsOK()) {
+    
+    if (!db) {
         return {};
     }
 
