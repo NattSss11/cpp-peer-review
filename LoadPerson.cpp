@@ -17,7 +17,7 @@ struct QueryInfo {
     std::string name_filter;
 };
 
-DBHandler ConnectToDatabase(const DBInfo& db_info) {
+optional <DBHandler> ConnectToDatabase(const DBInfo& db_info) {
     DBConnector connector(db_info.db_allow_exceptions, db_info.db_log_level);
      DBHandler db;
     if (db_info.db_name.starts_with("tmp."s)) {
@@ -47,7 +47,7 @@ std::vector<Person> ExecutePersonQuery(const DBHandler& db, const QueryInfo& que
 }
 
 std::vector<Person> LoadPersons(const DBInfo& db_info, const QueryInfo& query_info) {
-    DBHandler db = ConnectToDatabase(db_info);
+    optional <DBHandler> db = ConnectToDatabase(db_info);
     
     if (!db) {
         return {};
