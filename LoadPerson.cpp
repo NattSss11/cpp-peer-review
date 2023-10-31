@@ -53,7 +53,7 @@ std::vector<Person> LoadPersons(const DBInfo& db_info, const QueryInfo& query_in
         return {};
     }
 
-    return ExecutePersonQuery(db, query_info);
+    return ExecutePersonQuery(*db, query_info);
 }
 
 int main() {
